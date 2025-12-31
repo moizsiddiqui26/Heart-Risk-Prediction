@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioAI | Advanced Heart Health Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+<header class="site-header">
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="brand">
+            <span class="heart-icon"></span>
+            <span class="brand-name">❤️ HeartCare</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#about">About</a>
+            <a href="/#contact">Contact</a>
+            <a href="/calculate" class="btn-start">Start Calculation</a>
+        </nav>
+    </div>
+</header>
+    <div class="background-glow"></div>
+
+    <main class="container">
+        
+
+        <form id="predictionForm" class="glass-panel">
+            <div class="form-grid">
+                <!-- Personal Details -->
+                <div class="form-section">
+                    <h3><i class="fa-regular fa-id-card"></i> Personal Profile</h3>
+
+                    <div class="input-group">
+                        <label for="Age">Age</label>
+                        <input type="number" id="Age" name="Age" min="18" max="100" required placeholder="e.g. 45">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Sex">Biological Sex</label>
+                        <select id="Sex" name="Sex" required>
+                            <option value="" disabled selected>Select...</option>
+                            <option value="0">Female</option>
+                            <option value="1">Male</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Height">Height (cm)</label>
+                        <input type="number" id="Height" name="Height" min="100" max="250" required
+                            placeholder="e.g. 175">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Weight">Weight (kg)</label>
+                        <input type="number" id="Weight" name="Weight" min="30" max="200" required
+                            placeholder="e.g. 70">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="BMI">BMI (Auto-calculated)</label>
+                        <input type="number" id="BMI" name="BMI" readonly placeholder="---"
+                            style="background-color: #e2e8f0; cursor: not-allowed;">
+                    </div>
+                </div>
+
+                <!-- Health History -->
+                <div class="form-section">
+                    <h3><i class="fa-solid fa-notes-medical"></i> Medical History</h3>
+
+                    <div class="input-group">
+                        <label for="General_Health">Self-Rated Health</label>
+                        <select id="General_Health" name="General_Health" required>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Very_Good">Very Good</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                            <option value="Poor">Poor</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Checkup">Last Checkup</label>
+                        <select id="Checkup" name="Checkup" required>
+                            <option value="Within 1 year">Within 1 year</option>
+                            <option value="1-2 years">1-2 years</option>
+                            <option value="2-5 years">2-5 years</option>
+                            <option value="5+ years">5+ years</option>
+                            <option value="Never">Never</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Diabetes">Diabetes Status</label>
+                        <select id="Diabetes" name="Diabetes" required>
+                            <option value="No">No</option>
+                            <option value="Borderline">Borderline</option>
+                            <option value="During Pregnancy">During Pregnancy</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="Skin_Cancer" name="Skin_Cancer">
+                            <span class="checkmark"></span>
+                            Skin Cancer
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="Other_Cancer" name="Other_Cancer">
+                            <span class="checkmark"></span>
+                            Other Cancer
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="Depression" name="Depression">
+                            <span class="checkmark"></span>
+                            Depression
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="Arthritis" name="Arthritis">
+                            <span class="checkmark"></span>
+                            Arthritis
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Lifestyle -->
+                <div class="form-section full-width">
+                    <h3><i class="fa-solid fa-person-running"></i> Lifestyle Factors</h3>
+
+                    <div class="lifestyle-grid">
+                        <div class="input-group">
+                            <label for="Exercise">Regular Exercise</label>
+                            <select id="Exercise" name="Exercise" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="Smoking">Smoking History</label>
+                            <select id="Smoking" name="Smoking" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="Alcohol">Alcohol (Days/Month)</label>
+                            <input type="number" id="Alcohol" name="Alcohol" min="0" max="30" value="0">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="Fruit">Fruit (Servings/Month)</label>
+                            <input type="number" id="Fruit" name="Fruit" min="0" max="100" value="0">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="Green_Vegetables">Green Veggies (Servings/Month)</label>
+                            <input type="number" id="Green_Vegetables" name="Green_Vegetables" min="0" max="100"
+                                value="0">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="Fried_Potato">Fried Food (Servings/Month)</label>
+                            <input type="number" id="Fried_Potato" name="Fried_Potato" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <span>Analyze Risk Profile</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </form>
+
+        <div id="resultModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="result-header">
+                    <div id="riskIcon" class="risk-icon"></div>
+                    <h2 id="riskLevel">High Risk</h2>
+                </div>
+                <div class="result-body">
+                    <p>Based on your health indicators, our AI model estimates your cardiovascular disease risk
+                        probability as:</p>
+                    <div class="probability-meter">
+                        <div id="probFill" class="prob-fill"></div>
+                        <span id="probValue">0%</span>
+                    </div>
+                    <p class="disclaimer"><strong>Disclaimer:</strong> This tool provides an estimate based on
+                        statistical models. It is not a medical diagnosis. Please consult a cardiologist for a proper
+                        evaluation.</p>
+                </div>
+                <button class="btn-secondary" onclick="closeModal()">Close Result</button>
+
+                <button type="button" onclick="goToRecommendations()" class="view-btn">
+    View Recommendations
+</button>
+<style>
+.view-btn {
+    margin-top: 15px;
+    padding: 12px 26px;
+    border-radius: 25px;
+    border: none;
+    background: #4f46e5;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+.view-btn:hover {
+    background: #4338ca;
+}
+</style>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+    <script>
+let predictedRiskLevel = 1;
+
+// When prediction result is received
+function handlePredictionResponse(result) {
+    predictedRiskLevel = result.risk_level;
+    // Optional: update modal UI here
+}
+
+// Redirect to recommendation page
+function goToRecommendations() {
+    console.log("Redirecting to recommendation level:", predictedRiskLevel);
+    // Use Flask route with level
+    window.location.href = "/recommendation/" + predictedRiskLevel;
+}
+</script>
+
+
+</body>
+
+</html>

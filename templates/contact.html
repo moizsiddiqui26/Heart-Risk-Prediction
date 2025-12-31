@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact | HeartCare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+
+    <style>
+        body{
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f0fdfa);
+        }
+
+        .contact-page{
+            padding: 80px 8%;
+        }
+
+        .contact-container{
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .contact-title{
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .contact-title h1{
+            font-size: 38px;
+            color: #1f2933;
+        }
+
+        .contact-title p{
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .contact-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+            margin-bottom: 70px;
+        }
+
+        .contact-card{
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .contact-card:hover{
+            transform: translateY(-6px);
+        }
+
+        .contact-card i{
+            font-size: 34px;
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .contact-card h3{
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .contact-form-section{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .contact-form{
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .contact-form h2{
+            margin-bottom: 25px;
+        }
+
+        .contact-form input,
+        .contact-form textarea{
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .contact-form button{
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .contact-form button:hover{
+            background: #4338ca;
+        }
+
+        .map-box iframe{
+            width: 100%;
+            height: 350px;
+            border-radius: 18px;
+            border: none;
+        }
+
+        .footer{
+            text-align: center;
+            padding: 18px;
+            background: #111827;
+            color: #fff;
+            margin-top: 80px;
+        }
+
+        @media(max-width:768px){
+            .contact-form-section{
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo">❤️ HeartCare</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact" class="active">Contact</a>
+        <a class="calc-btn" href="/calculate">Start Calculation</a>
+    </nav>
+</header>
+
+<!-- CONTACT PAGE -->
+<section class="contact-page">
+    <div class="contact-container">
+        <div class="contact-title">
+            <h1>Get in Touch With Us</h1>
+            <p>We are always ready to help you with your heart health queries.</p>
+        </div>
+
+        <!-- CONTACT INFO CARDS -->
+        <div class="contact-grid">
+            <div class="contact-card">
+                <i class="fa-solid fa-envelope"></i>
+                <h3>Email</h3>
+                <p>heart_risk_prediction<br>@heartcare.com</p>
+            </div>
+
+            <div class="contact-card">
+                <i class="fa-solid fa-phone"></i>
+                <h3>Phone</h3>
+                <p>+91 9876543210</p>
+            </div>
+
+            <div class="contact-card">
+                <i class="fa-solid fa-location-dot"></i>
+                <h3>Location</h3>
+                <p>Nanded, Maharashtra, India</p>
+            </div>
+
+            <div class="contact-card">
+                <i class="fa-solid fa-clock"></i>
+                <h3>Support Hours</h3>
+                <p>Mon – Sat<br>10:00 AM – 10:00 PM</p>
+            </div>
+        </div>
+
+        
+
+            <div class="map-box">
+                <iframe 
+                    src="https://maps.google.com/maps?q=Nanded%20Maharashtra&t=&z=13&ie=UTF8&iwloc=&output=embed">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>2025 HeartCare | Heart Disease Risk Prediction System</p>
+</footer>
+
+</body>
+</html>

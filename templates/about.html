@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About | HeartCare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Common CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+
+    <style>
+        body{
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f0fdfa);
+        }
+
+        .about-page{
+            padding: 80px 8%;
+        }
+
+        .about-header{
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .about-header h1{
+            font-size: 40px;
+            color: #1f2933;
+        }
+
+        .about-header p{
+            color: #555;
+            max-width: 800px;
+            margin: 15px auto 0;
+        }
+
+        .about-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
+            margin-top: 40px;
+        }
+
+        .about-card{
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: 0.35s ease;
+        }
+
+        .about-card:hover{
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.12);
+        }
+
+        .about-card i{
+            font-size: 38px;
+            color: #4f46e5;
+            margin-bottom: 15px;
+        }
+
+        .about-card h3{
+            margin-bottom: 8px;
+        }
+
+        
+
+        .mission-vision{
+            margin-top: 90px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+        }
+
+        .mv-box{
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .mv-box:hover{
+            transform: translateY(-8px);
+        }
+
+        .footer{
+            text-align: center;
+            background: #111827;
+            color: white;
+            padding: 18px;
+            margin-top: 90px;
+        }
+
+        @media(max-width:768px){
+            .about-header h1{font-size: 30px;}
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo">❤️ HeartCare</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about" class="active">About</a>
+        <a href="/contact">Contact</a>
+        <a class="calc-btn" href="/calculate">Start Calculation</a>
+    </nav>
+</header>
+
+<!-- ABOUT PAGE -->
+<section class="about-page">
+
+    <div class="about-header">
+        <h1>About HeartCare</h1>
+        <p>
+            HeartCare is a heart disease risk prediction system built to assist individuals in 
+            understanding their cardiovascular health and taking preventive action at the right time.
+            This system is created for education, awareness, and early risk identification.
+        </p>
+    </div>
+
+    <!-- FEATURE / INFO CARDS -->
+    <div class="about-grid">
+        <div class="about-card">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <h3>Heart Risk Analysis</h3>
+            <p>
+                We assess multiple health and lifestyle parameters to identify possible heart disease risk levels.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Accurate Calculations</h3>
+            <p>
+                Our system processes medical and lifestyle information to provide reliable statistical predictions.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <i class="fa-solid fa-user-shield"></i>
+            <h3>Data Privacy</h3>
+            <p>
+                Your health data is kept private and secure. We never store user data permanently.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <i class="fa-solid fa-user-doctor"></i>
+            <h3>Medical Awareness</h3>
+            <p>
+                This platform supports early detection and promotes regular health checkups and awareness.
+            </p>
+        </div>
+    </div>
+
+    
+    <!-- MISSION & VISION -->
+    <div class="mission-vision">
+        <div class="mv-box">
+            <h2>Our Mission</h2>
+            <p>
+                To provide an accessible and reliable heart disease risk prediction system
+                that helps individuals understand their heart health and take preventive actions early.
+            </p>
+        </div>
+
+        <div class="mv-box">
+            <h2>Our Vision</h2>
+            <p>
+                To contribute towards reducing heart disease cases by encouraging regular health monitoring,
+                awareness, and early preventive care.
+            </p>
+        </div>
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <p>2025 HeartCare | Heart Disease Risk Prediction System</p>
+</footer>
+
+</body>
+</html>
+

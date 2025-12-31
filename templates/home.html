@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Risk – Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo">❤️ HeartCare</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a class="calc-btn" href="/calculate">Start Calculation</a>
+    </nav>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Heart Disease Risk Prediction</h1>
+        <p>
+            A simple and reliable web-based system to assess your potential heart disease risk
+            based on health and lifestyle information.
+        </p>
+
+        <a href="/calculate" class="hero-btn">
+            Predict Your Heart Disease Risk
+        </a>
+    </div>
+
+    <div class="hero-image">
+    <img src="{{ url_for('static', filename='images/heart.png') }}" alt="Human Heart Diagram">
+    </div>
+</section>
+
+
+
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-about">
+            <h3>HeartCare</h3>
+            <p>
+                HeartCare is a heart disease risk prediction platform created to promote early
+                detection, awareness, and prevention of cardiovascular diseases through simple
+                online assessment.
+            </p>
+        </div>
+
+        <div class="footer-links">
+            <h4>Quick Links</h4>
+            <a href="/">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="/calculate">Start Calculation</a>
+        </div>
+
+        <div class="footer-contact">
+            <h4>Contact Information</h4>
+            <p><strong>Email:</strong> heart_risk_prediction@heartcare.com</p>
+            <p><strong>Phone:</strong> +91 9876543210</p>
+            <p><strong>Location:</strong> Nanded, Maharashtra, India</p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>2025 HeartCare | Heart Disease Risk Prediction System | All Rights Reserved</p>
+    </div>
+</footer>
+
+
+</body>
+</html>
+

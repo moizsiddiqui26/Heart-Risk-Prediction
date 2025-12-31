@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CardioAI — Recommendations & Reports</title>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root{
+  --accent:#b30000;
+  --card-bg:#ffffff;
+  --muted:#6b7280;
+  --glass: rgba(255,255,255,0.9);
+}
+body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial; background:#f4f6f8; margin:0; padding:24px; color:#111827;}
+.container{max-width:1200px;margin:0 auto;}
+.header{display:flex;align-items:center;gap:16px}
+.logo{font-size:22px;color:var(--accent);font-weight:700}
+.h1{font-size:24px;margin:12px 0}
+.grid{display:grid;grid-template-columns: 1fr 420px; gap:20px;}
+@media (max-width:980px){ .grid{grid-template-columns: 1fr;} .right-col{order:2} }
+.card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.06);}
+.risk-grid {display:flex;gap:10px;flex-wrap:wrap;}
+.risk-pill{flex:1;min-width:110px;padding:12px;border-radius:10px;color:#fff;text-align:center;cursor:pointer;font-weight:600}
+.vlow{background:#2ecc71} .low{background:#27ae60} .mod{background:#f39c12} .high{background:#e67e22} .vh{background:#c0392b}
+.risk-title{font-weight:700;margin-bottom:8px}
+.small{font-size:13px;color:var(--muted)}
+/* ========== HEADER (SAME AS IMAGE) ========== */
+.site-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: #ffffff;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.header-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+}
+
+.heart-icon {
+    font-size: 22px;
+}
+
+/* Navigation */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #4f46e5;
+}
+
+/* Blue Button */
+.btn-start {
+    background: #4f46e5;
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-start:hover {
+    background: #4338ca;
+}
+
+/* Push page content below header */
+main.container {
+    margin-top: 40px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin: 3rem 0 4rem;
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    background: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 100px;
+    box-shadow: var(--shadow-sm);
+}
+
+.logo i {
+    color: var(--secondary-color);
+}
+
+.header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.header p {
+    color: var(--text-muted);
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+/* right column */
+.right-col .card {margin-bottom:14px}
+
+/* meter */
+.meter-wrap{display:flex;gap:18px;align-items:center}
+.meter{width:140px;height:140px;position:relative}
+.meter svg{transform:rotate(-90deg)}
+.meter .center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.meter .percent{font-size:20px;font-weight:700;color:var(--accent)}
+
+/* chart */
+.chart-box{height:240px}
+
+/* doctor list */
+.doctor-list{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.doctor-card{padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #e6eef6}
+.doc-actions{margin-top:8px;display:flex;gap:8px}
+
+/* diet/exercise cards */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.info-card{padding:12px;border-radius:10px;background:#fff;box-shadow:0 4px 12px rgba(2,6,23,0.06)}
+
+/* buttons */
+.btn{display:inline-flex;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;border:0;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-muted{background:#eef2f5;color:#0b4a6f}
+
+/* hidden on mobile */
+@media (max-width:640px){ .hide-sm{display:none} }
+
+/* highlight section */
+.highlight{outline:4px solid rgba(179,0,0,0.08);box-shadow:0 8px 32px rgba(179,0,0,0.06)}
+</style>
+</head>
+
+<body>
+<header class="site-header">
+    <div class="header-container">
+        <!-- Logo -->
+        <div class="brand">
+            <span class="heart-icon"></span>
+            <span class="brand-name">❤️ HeartCare</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#about">About</a>
+            <a href="/#contact">Contact</a>
+            <a href="/calculate" class="btn-start">Start Calculation</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+  <div class="header">
+    <div class="logo">CardioAI</div>
+    <div>
+      <div class="small">Clinical-grade risk insights • Personalized recommendations • Exportable reports</div>
+      <div class="h1">Heart Disease Recommendations & Reports</div>
+    </div>
+  </div>
+<style>
+
+:root{
+  --accent:#b30000;
+  --card-bg:#ffffff;
+  --muted:#6b7280;
+  --glass: rgba(255,255,255,0.9);
+}
+body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial; background:#f4f6f8; margin:0; padding:24px; color:#111827;}
+.container{max-width:1200px;margin:0 auto;}
+.header{display:flex;align-items:center;gap:16px}
+.logo{font-size:22px;color:var(--accent);font-weight:700}
+.h1{font-size:24px;margin:12px 0}
+.grid{display:grid;grid-template-columns: 1fr 420px; gap:20px;}
+@media (max-width:980px){ .grid{grid-template-columns: 1fr;} .right-col{order:2} }
+.card{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.06);}
+.risk-grid {display:flex;gap:10px;flex-wrap:wrap;}
+.risk-pill{flex:1;min-width:110px;padding:12px;border-radius:10px;color:#fff;text-align:center;cursor:pointer;font-weight:600}
+.vlow{background:#2ecc71} .low{background:#27ae60} .mod{background:#f39c12} .high{background:#e67e22} .vh{background:#c0392b}
+.risk-title{font-weight:700;margin-bottom:8px}
+.small{font-size:13px;color:var(--muted)}
+/* right column */
+.right-col .card {margin-bottom:14px}
+/* meter */
+.meter-wrap{display:flex;gap:18px;align-items:center}
+.meter{width:140px;height:140px;position:relative}
+.meter svg{transform:rotate(-90deg)}
+.meter .center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.meter .percent{font-size:20px;font-weight:700;color:var(--accent)}
+/* chart */
+.chart-box{height:240px}
+/* doctor list */
+.doctor-list{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.doctor-card{padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #e6eef6}
+.doc-actions{margin-top:8px;display:flex;gap:8px}
+/* diet/exercise cards */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.info-card{padding:12px;border-radius:10px;background:#fff;box-shadow:0 4px 12px rgba(2,6,23,0.06)}
+/* buttons */
+.btn{display:inline-flex;gap:8px;align-items:center;padding:10px 12px;border-radius:10px;border:0;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-muted{background:#eef2f5;color:#0b4a6f}
+/* hidden on mobile */
+@media (max-width:640px){ .hide-sm{display:none} }
+/* highlight section */
+.highlight{outline:4px solid rgba(179,0,0,0.08);box-shadow:0 8px 32px rgba(179,0,0,0.06)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+  </div>
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="risk-title">Select / view predicted risk range</div>
+        <div class="small">Open with query string <code>?level=3&risk=52</code> (level 1–5)</div>
+        <div style="height:10px"></div>
+        <div class="risk-grid">
+          <div class="risk-pill vlow" onclick="show(1)">Very Low<br><small>0–20%</small></div>
+          <div class="risk-pill low" onclick="show(2)">Low<br><small>21–40%</small></div>
+          <div class="risk-pill mod" onclick="show(3)">Moderate<br><small>41–60%</small></div>
+          <div class="risk-pill high" onclick="show(4)">High<br><small>61–80%</small></div>
+          <div class="risk-pill vh" onclick="show(5)">Very High<br><small>81–100%</small></div>
+        </div>
+      </div>
+      <div id="detailsArea"></div>
+      <div class="card" id="dietCard" style="margin-top:12px;display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Diet Plan & Download</div>
+            <div class="small">Download diet chart as CSV or PDF</div>
+          </div>
+          <div>
+            <button class="btn btn-muted" onclick="downloadDietCSV()">Download CSV</button>
+            <button class="btn btn-primary" onclick="downloadDietPDF()">Download PDF</button>
+          </div>
+        </div>
+        <div id="dietContent" style="margin-top:12px"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Export & Alerts</div>
+            <div class="small">Generate printable PDF report. For high levels, send an alert to a doctor.</div>
+          </div>
+          <div>
+            <button class="btn btn-muted" onclick="printFriendly()">Print (browser)</button>
+            <button class="btn btn-primary" onclick="generatePDF()">Download Report (PDF)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-col">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-weight:700">Severity Meter</div>
+            <div class="small">Animated severity meter shows risk %</div>
+          </div>
+          <div id="meterWrap" class="meter-wrap">
+            <div class="meter" aria-hidden="true">
+              <svg width="140" height="140" viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0%" stop-color="#2ecc71"/>
+                    <stop offset="50%" stop-color="#f39c12"/>
+                    <stop offset="100%" stop-color="#c0392b"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="40" stroke="#eef2f5" stroke-width="12" fill="none"></circle>
+                <circle id="meterArc" cx="50" cy="50" r="40" stroke="url(#g1)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="0 251.2"></circle>
+              </svg>
+              <div class="center">
+                <div class="percent" id="meterPercent">0%</div>
+                <div class="small" id="meterLabel">Risk</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div style="font-weight:700">Risk factor overview</div>
+          <div class="chart-box card" style="padding:10px;margin-top:8px">
+            <canvas id="factorChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div style="font-weight:700">Nearby Cardiologists</div>
+        <div class="small">Map shows doctors in Nanded, Maharashtra. (Uses free OpenStreetMap tiles).</div>
+        <div id="map" style="height:260px;margin-top:10px;border-radius:8px;overflow:hidden"></div>
+        <div class="doctor-list" id="doctorList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+/* ---------------------------
+   Sample data — Cardiologists in Nanded, MH
+   Each doctor: {name,address,phone,email,lat,lon}
+   --------------------------- */
+const doctors = [
+  {name:"Dr. Shrikant Bhoskar", address:"Sunrise Global Hospital, Nanded", phone:"+91 70454 45363", email:"shrikant@example.com", lat:19.1683962, lon:77.3063096},
+  {name:"Dr. Sunil Kamble", address:"Rhythm Heart Care Clinic, Nanded", phone:"+91 92267 30273", email:"sunil@example.com", lat:19.1574799, lon:77.3081876},
+  {name:"Dattakrupa Heart Care", address:"Doctor Lane, Khadakpura, Nanded", phone:"+91 93071 27289", email:"dattakrupa@example.com", lat:19.159009, lon:77.307444}
+];
+
+// Nanded coordinates for map centering
+const NANDED_LAT = 19.1601;
+const NANDED_LON = 77.3040;
+
+/* recommendation & plan templates */
+const PLANS = {
+  1:{
+    title:"✅ Very Low Risk (0–20%)",
+    desc:"Continue healthy lifestyle. Routine checkups once/year.",
+    factors:[2,2,1,2,2],
+    diet:["Daily fruits & vegetables","Whole grains","Limit processed sugar"],
+    exercise:["30 min walk daily","Yoga/Stretching 3× week"]
+  },
+  2:{
+    title:"🟢 Low Risk (21–40%)",
+    desc:"Small lifestyle improvements recommended.",
+    factors:[3,3,2,3,3],
+    diet:["Reduce salt","Increase fiber","Include omega-3 foods"],
+    exercise:["Brisk walk 30–40 mins","Light resistance training 2× week"]
+  },
+  3:{
+    title:"🟡 Moderate Risk (41–60%)",
+    desc:"Preventive steps advised — see doctor for guidance.",
+    factors:[5,6,5,5,4],
+    diet:["Mediterranean diet","Avoid fried foods","Limit red meat"],
+    exercise:["Brisk walking 30–45 mins","Swimming or cycling","Yoga for stress"]
+  },
+  4:{
+    title:"🟠 High Risk (61–80%)",
+    desc:"Cardiologist consultation strongly advised.",
+    factors:[7,8,7,6,5],
+    diet:["Low sodium & low saturated fat","Small frequent meals","Consult dietician"],
+    exercise:["Doctor-approved light exercise only","Avoid heavy exertion"]
+  },
+  5:{
+    title:"🔴 Very High Risk (81–100%)",
+    desc:"Urgent medical attention required — visit ER or cardiology now.",
+    factors:[9,10,9,8,7],
+    diet:["Strict medical diet","Monitor blood sugar","Avoid processed foods"],
+    exercise:["Only doctor-approved minimal activity"]
+  }
+};
+/* read query params */
+const params = new URLSearchParams(location.search);
+const levelParam = parseInt(params.get("level")) || 1;
+const riskPercentParam = parseFloat(params.get("risk")) || (levelParam*20 - 10); // default mid-range
+
+/* MODIFICATION: Global variable to track currently displayed risk level */
+let currentRiskLevel = levelParam;
+
+/* chart instance holder */
+let factorChartInstance = null;
+/* initialize map with Leaflet */
+
+// MODIFICATION: Center map on Nanded, MH
+let map = L.map('map', {scrollWheelZoom:false}).setView([NANDED_LAT, NANDED_LON], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19, attribution:'© OpenStreetMap'}).addTo(map);
+
+// Add markers for Nanded doctors
+doctors.forEach((d,idx)=>{
+  const marker = L.marker([d.lat, d.lon]).addTo(map);
+  marker.bindPopup(`<strong>${d.name}</strong><br>${d.address}<br>Phone: ${d.phone}<br><a href="mailto:${d.email}?subject=CardioAI%20Alert&body=Dear%20${encodeURIComponent(d.name)}%2C%0A%0AI%20would%20like%20to%20alert%20you%20about%20a%20patient%20with%20a%20high%20risk%20score.%0A%0A--%20This%20is%20a%20prefill%20from%20CardioAI">Email</a>`);
+});
+
+/* populate doctor list below map */
+function refreshDoctorList(){
+  const div = document.getElementById('doctorList');
+  div.innerHTML = '';
+  doctors.forEach(d=>{
+    const el = document.createElement('div');
+    el.className = 'doctor-card';
+    el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:700">${d.name}</div>
+        <div class="small">${d.address}</div>
+        <div class="small">Phone: <a href="tel:${d.phone}">${d.phone}</a></div>
+      </div>
+      <div class="doc-actions">
+        <button class="btn btn-muted" onclick="emailDoctor('${d.email}','${d.name}')">Email</button>
+        <button class="btn btn-primary" onclick="alertDoctor('${d.email}','${d.name}')">Send Alert</button>
+      </div>
+    </div>`;
+    div.appendChild(el);
+  });
+}
+refreshDoctorList();
+/* show risk details */
+function show(level){
+  // MODIFICATION: Update global currentRiskLevel
+  currentRiskLevel = level;
+  
+  const data = PLANS[level];
+  const details = document.getElementById('detailsArea');
+  details.innerHTML = `
+    <div class="card highlight" id="detailSection">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:18px">${data.title}</div>
+          <div class="small" style="margin-top:6px">${data.desc}</div>
+          <div style="margin-top:10px">
+            <div style="font-weight:600">Key actions</div>
+            <ul>${data.diet.slice(0,3).map(x=>`<li>${x}</li>`).join('')}</ul>
+          </div>
+        </div>
+        <div style="width:320px">
+          <div style="font-weight:700">Risk Summary</div>
+          <div class="small">Predicted risk: <strong id="predRiskText">--</strong></div>
+          <div style="height:12px"></div>
+          <div style="font-weight:700">Detailed Cards</div>
+          <div class="cards-grid" style="margin-top:10px">
+            <div class="info-card">
+              <strong>Diet</strong>
+              <ul>${data.diet.map(i=>`<li>${i}</li>`).join('')}</ul>
+            </div>
+            <div class="info-card">
+              <strong>Exercise</strong>
+              <ul>${data.exercise.map(i=>`<li>${i}</li>`).join('')}</ul>
+            </div>
+            <div class="info-card">
+              <strong>Medical Care</strong>
+              <ul><li>${data.desc}</li><li>Recommended tests: BP / Lipid profile / ECG</li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  // show diet card area
+  document.getElementById('dietCard').style.display = 'block';
+  document.getElementById('dietContent').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="padding:8px">
+        <strong>Diet tips</strong>
+        <ul>${data.diet.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+      <div style="padding:8px">
+        <strong>Exercise tips</strong>
+        <ul>${data.exercise.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>
+    </div>
+  `;
+  // update meter & chart & risk label
+  const risk = (typeof riskPercentParam === 'number' && !Number.isNaN(riskPercentParam)) ? riskPercentParam : Math.min(100, Math.max(5, level*20 - 5));
+  animateMeter(risk);
+  document.getElementById('predRiskText').innerText = risk + '%';
+  renderChart(data.factors);
+  // scroll into view and highlight briefly
+  setTimeout(()=> document.getElementById('detailSection').scrollIntoView({behavior:'smooth'}),150);
+  blinkHighlight('detailSection');
+  // if high/very-high show alert helper (client-side)
+  if(level >=4){
+    // show a visible quick action: send prefillemail to nearest doctor
+    // We'll show an "Send Alert" button inside doctor cards (already added)
+  }
+}
+/* animate meter using stroke-dasharray of circle */
+function animateMeter(percent){
+  const arc = document.getElementById('meterArc');
+  const meterPercent = document.getElementById('meterPercent');
+  const circumference = 2 * Math.PI * 40; // r=40
+  const target = Math.max(0, Math.min(100, percent));
+  const length = (target/100) * circumference;
+  // animate
+  let current = 0;
+  const steps = 50;
+  const stepVal = length/steps;
+  const stepPct = target/steps;
+  if(window.meterAnim) clearInterval(window.meterAnim);
+  arc.style.strokeDasharray = `0 ${circumference}`;
+  window.meterAnim = setInterval(()=>{
+    current += stepVal;
+    const filled = current;
+    const remain = Math.max(0, circumference - filled);
+    arc.style.strokeDasharray = `${filled} ${remain}`;
+    meterPercent.innerText = Math.round((filled/circumference)*100) + '%';
+    if(filled >= length - 0.1) { clearInterval(window.meterAnim); meterPercent.innerText = Math.round(target)+'%'; }
+  },10);
+}
+/* small blink highlight */
+function blinkHighlight(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.add('highlight');
+  setTimeout(()=> el.classList.remove('highlight'), 2200);
+}
+/* Chart.js for factors */
+function renderChart(values){
+  const ctx = document.getElementById('factorChart').getContext('2d');
+  if(factorChartInstance) factorChartInstance.destroy();
+  factorChartInstance = new Chart(ctx, {
+    type:'bar',
+    data:{labels:['BMI','BP','Cholesterol','Lifestyle','Diet'], datasets:[{label:'Factor Level', data: values, backgroundColor:['#2ecc71','#27ae60','#f39c12','#e67e22','#c0392b']}]},
+    options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}}}
+  });
+}
+/* download diet CSV */
+function downloadDietCSV(){
+  // MODIFICATION: Use currentRiskLevel instead of re-reading param
+  const lev = currentRiskLevel; 
+  const plan = PLANS[lev];
+  const rows = [['Type','Item'], ...plan.diet.map(i=>['Diet',i]), ...plan.exercise.map(i=>['Exercise',i])];
+  const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `diet_plan_level_${lev}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+/* generate diet PDF via jsPDF (simple) */
+async function downloadDietPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  // MODIFICATION: Use currentRiskLevel instead of re-reading param
+  const lev = currentRiskLevel;
+  const plan = PLANS[lev];
+  doc.setFontSize(16); doc.text(`Diet & Exercise Plan - ${plan.title}`, 14, 20);
+  doc.setFontSize(12);
+  let y = 34;
+  doc.text('Diet:', 14, y); y += 6;
+  plan.diet.forEach(i=>{ doc.text(`- ${i}`, 18, y); y+=6; });
+  y += 4; doc.text('Exercise:', 14, y); y+=6;
+  plan.exercise.forEach(i=>{ doc.text(`- ${i}`, 18, y); y+=6; });
+  doc.save(`diet_plan_level_${lev}.pdf`);
+}
+/* print friendly */
+function printFriendly(){
+  window.print();
+}
+/* generate PDF report (summary + chart snapshot) */
+async function generatePDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({unit:'px', format:'a4'});
+  // MODIFICATION: Use currentRiskLevel instead of re-reading param
+  const lev = currentRiskLevel;
+  const plan = PLANS[lev];
+  const risk = (riskPercentParam || (lev*20 - 10)); // Keep using the URL risk % or calculated default
+  
+  // header
+  doc.setFontSize(20); doc.text('CardioAI — Health Report', 20, 30);
+  doc.setFontSize(12); doc.text(`${plan.title} — Predicted risk: ${ risk }%`, 20, 52);
+  doc.setFontSize(11); doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 68);
+  // chart capture
+  // draw small chart snapshot
+  const chartCanvas = document.getElementById('factorChart');
+  const chartDataUrl = chartCanvas.toDataURL('image/png',1.0);
+  doc.addImage(chartDataUrl,'PNG',20,90,320,160);
+  // diet/exercise
+  let y = 260;
+  doc.setFontSize(13); doc.text('Diet Recommendations:', 20, y); y += 16;
+  plan.diet.forEach(i=>{ doc.setFontSize(11); doc.text('- ' + i, 24, y); y += 12; });
+  y += 8; doc.setFontSize(13); doc.text('Exercise Recommendations:', 20, y); y += 16;
+  plan.exercise.forEach(i=>{ doc.setFontSize(11); doc.text('- ' + i, 24, y); y += 12; });
+  // doctor list
+  y += 14; doc.setFontSize(13); doc.text('Nearby Doctors:', 20, y); y += 16;
+  doctors.forEach(d=>{
+    doc.setFontSize(11); doc.text(`${d.name} — ${d.address} — ${d.phone}`, 24, y); y += 12;
+  });
+  doc.save(`cardioai_report_level_${lev}.pdf`);
+}
+/* quick mailto email to doctor (client side) */
+function emailDoctor(email,name){
+  // MODIFICATION: Use currentRiskLevel instead of re-reading param
+  const lev = currentRiskLevel;
+  const risk = (riskPercentParam || (lev*20 - 10));
+  const subject = encodeURIComponent(`CardioAI: Consultation request — risk ${risk}%`);
+  const body = encodeURIComponent(`Dear ${name},%0A%0AI am contacting you regarding a patient who has a predicted cardiovascular risk of ${risk}%. Please let me know available slots for a consultation.%0A%0ARegards,%0ACardioAI user`);
+  window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+}
+/* client-side 'alert' (opens mailto but also demonstrates potential server call) */
+function alertDoctor(email,name){
+  // open mailto prefilled (user's email client)
+  emailDoctor(email,name);
+  // OPTIONAL: If you want server-side auto-sending, you can call your Flask endpoint:
+  // fetch('/send_alert', {
+  //   method:'POST',
+  //   headers:{'Content-Type':'application/json'},
+  //   body: JSON.stringify({doctor_email:email, doctor_name:name, level: currentRiskLevel, risk: (riskPercentParam || (levelParam*20 -10))})
+  // }).then(r=>r.json()).then(console.log).catch(console.error);
+}
+/* Initialize: show selected level (from query param) */
+window.addEventListener('load',()=> {
+  const lvl = parseInt(new URLSearchParams(location.search).get('level')) || levelParam;
+  show(lvl);
+});
+</script>
+</body>
+</html>
